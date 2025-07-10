@@ -60,3 +60,14 @@ with tab1:
     fig.autofmt_xdate()
     with col2:
         st.pyplot(fig)
+with tab2:
+    st.subheader('Compare with other locations')
+    targets = st.multiselect('Choose other locations', df.columns[1:], location)
+    fig, ax = plt.subplots()
+    for target in targets:
+        ax.plot(sub_df['Quarter'], sub_df[target])
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Population')
+    ax.set_xticks([sub_df.at[start_idx, 'Quarter'], sub_df.at[end_idx, 'Quarter']])
+    fig.autofmt_xdate()
+    st.pyplot(fig)
