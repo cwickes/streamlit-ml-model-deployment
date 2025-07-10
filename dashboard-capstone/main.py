@@ -42,10 +42,21 @@ end = f'{qend} {yend}'
 tab1, tab2 = st.tabs(('Population change', 'Compare'))
 with tab1:
     st.subheader(f'Population change from {start} to {end}')
+    col1, col2 = st.columns(2)
     start_pop = df.loc[df['Quarter'] == start, location].item()
     end_pop = df.loc[df['Quarter'] == end, location].item()
     delta = end_pop - start_pop
-    st.metric(start, start_pop)
-    st.metric(end, end_pop, delta)
-    start_idx = df[df['Quarter'] == start].iloc[0]
-    end_idx = df[df['Quarter'] == end].iloc[0]
+    with col1:
+        st.metric(start, start_pop)
+        st.metric(end, end_pop, delta)
+    start_idx = df[df['Quarter'] == start].index[0]
+    end_idx = df[df['Quarter'] == end].index[0]
+    sub_df = df.loc[start_idx:end_idx]
+    fig, ax = plt.subplots()
+    ax.plot(sub_df['Quarter'], sub_df[location])
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Population')
+    ax.set_xticks([sub_df.at[start_idx, 'Quarter'], sub_df.at[end_idx, 'Quarter']])
+    fig.autofmt_xdate()
+    with col2:
+        st.pyplot(fig)
